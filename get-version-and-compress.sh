@@ -16,24 +16,19 @@ cd ${WORKDIR} || exit 1
 
 # Clone repository
 echo "Cloning MariaDB repository..."
-git clone https://github.com/MariaDB/server mariadb-server || {
+git clone -b "mariadb-${VERSION}" --depth=1 https://github.com/MariaDB/server "mariadb-${VERSION}" || {
     echo "Failed to clone repository"
     exit 1
 }
 
-# Change to repository directory
-cd mariadb-server || exit 1
-
-# Checkout specified version
-echo "Checking out version ${VERSION}..."
-git checkout mariadb-${VERSION} || {
-    echo "Failed to checkout version mariadb-${VERSION}"
-    exit 1
-}
+# Change to repository directory init submodules
+cd "mariadb-${VERSION}" || exit 1
+git submodule update --init --recursive
+cd ..
 
 # Create tarball
 echo "Creating tarball..."
-tar --exclude='.git*' -czf ../mariadb-${VERSION}.tar.gz . || {
+tar --exclude='.git*' -cvzf mariadb-${VERSION}.tar.gz mariadb-${VERSION}/ || {
     echo "Failed to create tarball"
     exit 1
 }
@@ -41,5 +36,4 @@ tar --exclude='.git*' -czf ../mariadb-${VERSION}.tar.gz . || {
 echo "Success: mariadb-${VERSION}.tar.gz created in ${WORKDIR}/.."
 
 # Clean up working directory
-cd ..
-rm -rf ${WORKDIR}/mariadb-server
+rm -rf ${WORKDIR}/mariadb-${VERSION}

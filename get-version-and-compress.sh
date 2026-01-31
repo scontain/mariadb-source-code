@@ -28,7 +28,7 @@ cd ..
 
 # Create tarball
 echo "Creating tarball..."
-tar --exclude='.git*' -cvzf mariadb-${VERSION}.tar.gz mariadb-${VERSION}/ || {
+tar --exclude='.git*' --exclude='mysql-test' -cvzf mariadb-${VERSION}.tar.gz mariadb-${VERSION}/ || {
     echo "Failed to create tarball"
     exit 1
 }
